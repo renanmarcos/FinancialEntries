@@ -2,10 +2,9 @@
 
 Made with .NET Core 3.0
 
-## Instructions
+## Instructions to run
 
 ```sh
-export GOOGLE_APPLICATION_CREDENTIALS=credentials.json
 dotnet restore
 dotnet run
 ```
