@@ -1,13 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
-namespace financial_entries
+namespace FinancialEntries
 {
     public class Program
     {
@@ -21,6 +15,8 @@ namespace financial_entries
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    webBuilder.UseSetting("detailedErrors", "true");
+                    webBuilder.CaptureStartupErrors(true);
                 });
     }
 }
