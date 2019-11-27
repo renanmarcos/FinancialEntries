@@ -3,6 +3,7 @@ using FinancialEntries.Models;
 using FinancialEntries.Services.Store;
 using FinancialEntries.Services.Firestore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 
 namespace FinancialEntries.Controllers
 {
@@ -12,21 +13,22 @@ namespace FinancialEntries.Controllers
     public class StoresController : ControllerBase
     {
         private readonly Repository _repository;
-        private IDatabase _database;
 
         public StoresController(IDatabase database)
         {
             _repository = new Repository(database);
-            _database = database;
         }
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<Store>> Index()
         {
             return Ok(_repository.Index());
         }
 
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ActionResult), StatusCodes.Status404NotFound)]
         public ActionResult<Store> Get(string id)
         {
             Store store = _repository.Get(id);
@@ -36,6 +38,7 @@ namespace FinancialEntries.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         public ActionResult<Store> Store([FromBody] Store store)
         {
             var model = _repository.Insert(store);
@@ -44,6 +47,7 @@ namespace FinancialEntries.Controllers
 
         [HttpPut("{id}")]
         [HttpPatch("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<Store> Update(string id, [FromBody] Store store)
         {
             store.Id = id;
@@ -51,6 +55,9 @@ namespace FinancialEntries.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(ActionResult), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ActionResult), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ActionResult), StatusCodes.Status422UnprocessableEntity)]
         public IActionResult Delete(string id)
         {
             var cannotDeleteReason = _repository.GetCannotDeleteReason(id);

@@ -1,5 +1,6 @@
 using FinancialEntries.Services.FinancialEntry;
 using FinancialEntries.Services.Store;
+using FinancialEntries.Services.ValidationAttributes;
 using Google.Cloud.Firestore;
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -35,8 +36,9 @@ namespace FinancialEntries.Models
 
         [FirestoreProperty("Store")]
         [JsonIgnore]
-        public DocumentReference StoreReference { get; set; }
+        internal DocumentReference StoreReference { get; set; }
 
+        [SwaggerExcludeAttribute]
         public Store Store { get; internal set; }
 
         [Required]

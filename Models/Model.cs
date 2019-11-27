@@ -1,3 +1,4 @@
+using FinancialEntries.Services.ValidationAttributes;
 using Google.Cloud.Firestore;
 
 namespace FinancialEntries.Models
@@ -6,6 +7,6 @@ namespace FinancialEntries.Models
     public abstract class Model
     {
         [FirestoreDocumentId]
-        public string Id { get; set; }
+        public string Id { get; internal set; }
     }
 }

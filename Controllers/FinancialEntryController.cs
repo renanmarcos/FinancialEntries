@@ -2,6 +2,7 @@
 using FinancialEntries.Models;
 using FinancialEntries.Services.FinancialEntry;
 using FinancialEntries.Services.Firestore;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FinancialEntries.Controllers
@@ -19,12 +20,15 @@ namespace FinancialEntries.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<FinancialEntry>> Index()
         {
             return Ok(_repository.Index());
         }
 
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ActionResult), StatusCodes.Status404NotFound)]
         public ActionResult<FinancialEntry> Get(string id)
         {
             FinancialEntry financialEntry = _repository.Get(id);
@@ -34,6 +38,8 @@ namespace FinancialEntries.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(typeof(ActionResult), StatusCodes.Status422UnprocessableEntity)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         public ActionResult<FinancialEntry> Store(
             [FromBody] FinancialEntry financialEntry)
         {
@@ -48,6 +54,8 @@ namespace FinancialEntries.Controllers
 
         [HttpPut("{id}")]
         [HttpPatch("{id}")]
+        [ProducesResponseType(typeof(ActionResult), StatusCodes.Status422UnprocessableEntity)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<FinancialEntry> Update(
             string id, 
             [FromBody] FinancialEntry financialEntry)
@@ -62,6 +70,8 @@ namespace FinancialEntries.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(ActionResult), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ActionResult), StatusCodes.Status204NoContent)]
         public IActionResult Delete(string id)
         {
             if (_repository.Delete(id)) return NoContent();
