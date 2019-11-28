@@ -91,7 +91,7 @@ namespace FinancialEntries.Services.FinancialEntry
 
                 if (result.Exists) 
                 {
-                    financialEntry.Store = result.ConvertTo<Models.Store>();
+                    financialEntry.Store = result.ConvertTo<StoreModel>();
                 }
 
                 return financialEntry;

@@ -37,7 +37,8 @@ While running the project, you can access the Swagger UI at `/docs` endpoint. Th
 
 ## See in action running into Google Cloud Platform
 
-An instance of Google App Engine is running for this project at: [http://financial-entries-259514.appspot.com/]
+An instance of Google App Engine is running for this project at: http://financial-entries-259514.appspot.com/
+- Documentation: http://financial-entries-259514.appspot.com/docs
 
 ### Notes
 

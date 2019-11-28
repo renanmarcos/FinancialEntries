@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using FinancialEntries.Extensions;
 using FinancialEntries.Models;
+using FinancialEntries.Services.FinancialEntry;
 using FinancialEntries.Services.Firestore;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,38 +15,34 @@ namespace FinancialEntries.Controllers
     {
         private IDatabase _database;
 
+        private Repository _repository;
+
         public StatementController(IDatabase database)
         {
             _database = database;
+            _repository = new Repository(database);
         }
 
-        // Temporary saving logic
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<FinancialEntry>> Index([FromQuery] DateTime? date)
+        public ActionResult<IEnumerable<ConsolidatedFinancialEntry>> Index()
         {
-            // Date.FromDateTime(date.Value);
-            var database = _database.GetInstance();
-            var financialEntriesReference = database.Collection("FinancialEntries");
+            var financialEntries = _repository.Index();
 
-        //    var q= financialEntriesReference
-        //         .OrderBy("ReferenceDate")
-        //         .OrderBy("PaymentMethod")
-        //         .GetSnapshotAsync();
+            var consolidated = financialEntries.GroupBy(financialEntry => new
+            {
+                financialEntry.ReferenceDate.Date,
+                financialEntry.PaymentMethod,
+                financialEntry.Store.Type
+            }).Select(group => new ConsolidatedFinancialEntry()
+            {
+                PaymentMethod = group.Key.PaymentMethod,
+                ReferenceDate = group.Key.Date,
+                Type = group.Key.Type,
+                Amount = group.Sum(financialEntry => financialEntry.Amount)
+            });
 
-            // q.Wait();
-
-        //    return Ok( q.Result.Select(d => d.ConvertTo<FinancialEntry>()).ToList() );
-
-           
-
-            var query = financialEntriesReference
-                .WhereGreaterThanOrEqualTo("ReferenceDate", date.Value.ToUniversalTime().AbsoluteStart())
-                .WhereLessThanOrEqualTo("ReferenceDate", date.Value.ToUniversalTime().AbsoluteEnd())
-                .GetSnapshotAsync();
-            query.Wait();
-
-            return Ok(query.Result.First().ConvertTo<FinancialEntry>());
+            return Ok(consolidated);
         }
     }
 }
