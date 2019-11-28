@@ -32,8 +32,7 @@ Server will be running at `http://localhost:8080`
 
 While running the project, you can access the Swagger UI at `/docs` endpoint. This will show all API resources, properties and responses.
 
-- Insomnia Workspace is available at "Insomnia-Workspace.json" as alternative.
-- Postman Workspace is available at "Postman-Workspace.json" as alternative.
+- Insomnia Workspace is available at `insomnia.json` as alternative.
 
 ## See in action running into Google Cloud Platform
 

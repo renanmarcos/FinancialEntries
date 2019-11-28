@@ -9,17 +9,14 @@ using Microsoft.AspNetCore.Mvc;
 namespace FinancialEntries.Controllers
 {
     [ApiController]
-    [Route("/statement")]
+    [Route("/statements")]
     [Produces("application/json")]
     public class StatementController : ControllerBase
     {
-        private IDatabase _database;
-
         private Repository _repository;
 
         public StatementController(IDatabase database)
         {
-            _database = database;
             _repository = new Repository(database);
         }
 
