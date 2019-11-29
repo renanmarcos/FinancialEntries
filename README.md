@@ -8,6 +8,7 @@ Made with .NET Core 3.0, Google Cloud Firestore and Google App Engine
 - Download this repository and run in terminal:
 
 ```sh
+cd Src/
 dotnet restore
 dotnet run
 ```
@@ -22,6 +23,7 @@ If you prefer, you can run this project in Docker container.
 - Download this repository and run in terminal:
 
 ```sh
+cd Src/
 docker build -t app .
 docker run -d -p 8080:8080 --rm --name api app
 ```

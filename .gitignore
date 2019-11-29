@@ -5,6 +5,7 @@ project.lock.json
 *.pyc
 nupkg/
 .editorconfig
+*.csproj.user
 
 # Visual Studio Code
 .vscode
