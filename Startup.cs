@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using FinancialEntries.Extensions;
 using Microsoft.OpenApi.Models;
 using FinancialEntries.Services.ValidationAttributes;
+using FinancialEntries.Services;
 
 namespace FinancialEntries
 {
@@ -20,6 +21,7 @@ namespace FinancialEntries
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMemoryCache();
             services.AddControllers();
             services.AddDependencyInjection();
             services.AddCors(options => 
@@ -70,6 +72,7 @@ namespace FinancialEntries
                 options.SwaggerEndpoint("/docs/v1/docs.json", "Web API v1");
                 options.RoutePrefix = "docs";
             });
+            StaticServiceProvider.Provider = app.ApplicationServices;
         }
     }
 }

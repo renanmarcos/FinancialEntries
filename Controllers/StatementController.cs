@@ -1,10 +1,13 @@
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using FinancialEntries.Models;
+using FinancialEntries.Services.Cache;
 using FinancialEntries.Services.FinancialEntry;
 using FinancialEntries.Services.Firestore;
+using FinancialEntries.Services.Statement;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace FinancialEntries.Controllers
 {
@@ -15,31 +18,29 @@ namespace FinancialEntries.Controllers
     {
         private Repository _repository;
 
-        public StatementController(IDatabase database)
+        private IMemoryCache _cache;
+
+        public StatementController(IDatabase database, IMemoryCache cache)
         {
             _repository = new Repository(database);
+            _cache = cache;
         }
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<ConsolidatedFinancialEntry>> Index()
         {
-            var financialEntries = _repository.Index();
+            var cached = _cache.GetOrCreate<IEnumerable<ConsolidatedFinancialEntry>>(
+                CacheKey.ConsolidatedFinancialEntries,
+                context => 
+                {
+                    context.SetAbsoluteExpiration(TimeSpan.FromDays(7));
+                    context.SetPriority(CacheItemPriority.High);
+                    
+                    return new ConsolidatedStatement().Consolidate(_repository);
+                });
 
-            var consolidated = financialEntries.GroupBy(financialEntry => new
-            {
-                financialEntry.ReferenceDate.Date,
-                financialEntry.PaymentMethod,
-                financialEntry.Store.Type
-            }).Select(group => new ConsolidatedFinancialEntry()
-            {
-                PaymentMethod = group.Key.PaymentMethod,
-                ReferenceDate = group.Key.Date,
-                Type = group.Key.Type,
-                Amount = group.Sum(financialEntry => financialEntry.Amount)
-            });
-
-            return Ok(consolidated);
+            return Ok(cached);
         }
     }
 }

@@ -4,7 +4,7 @@ namespace FinancialEntries.Models
 {
     public class ConsolidatedFinancialEntry
     {
-        public DateTime ReferenceDate { get; set; }
+        public string ReferenceDate { get; set; }
         
         public string PaymentMethod { get; set; }
 

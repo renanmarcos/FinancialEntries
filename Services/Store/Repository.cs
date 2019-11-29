@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FinancialEntries.Services.Cache;
 using FinancialEntries.Services.Firestore;
+using FinancialEntries.Services.Observers;
 using Google.Cloud.Firestore;
 using StoreModel = FinancialEntries.Models.Store;
 
@@ -13,9 +15,12 @@ namespace FinancialEntries.Services.Store
 
         private const string Collection = "Stores";
 
+        private Subject subject = new Subject();
+
         public Repository(IDatabase database) 
         {
             _database = database;
+            subject.AddObserver(new CacheObserver(CacheKey.ConsolidatedFinancialEntries));
         }
 
         public RecuperableCause GetCannotDeleteReason(string id) 
@@ -62,6 +67,8 @@ namespace FinancialEntries.Services.Store
                 .Collection(Collection)
                 .Document(model.Id)
                 .SetAsync(model, SetOptions.Overwrite);
+
+            subject.NotifyObservers();
 
             return model;
         }
