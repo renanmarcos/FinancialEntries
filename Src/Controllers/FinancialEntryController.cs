@@ -29,7 +29,7 @@ namespace FinancialEntries.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ActionResult), StatusCodes.Status404NotFound)]
-        public ActionResult<FinancialEntry> Get(string id)
+        public ActionResult<FinancialEntry> Show(string id)
         {
             FinancialEntry financialEntry = _repository.Get(id);
             if (financialEntry == null) return NotFound();

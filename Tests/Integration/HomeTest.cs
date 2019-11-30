@@ -16,11 +16,9 @@ namespace Tests.Integration
         }
 
         [Fact]
-        public async Task TestGetStockItemsAsync()
+        public async Task TestGet()
         {
-            var request = "/";
-
-            var response = await Client.GetAsync(request);
+            var response = await Client.GetAsync("/");
 
             response.EnsureSuccessStatusCode();
             Assert.Equal("text/html", response.Content.Headers.ContentType.ToString());
