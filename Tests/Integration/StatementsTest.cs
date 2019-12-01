@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -122,8 +123,24 @@ namespace Tests.Integration
             var json = await response.Content.ReadAsStringAsync();
             var list = JsonConvert.DeserializeObject<List<ConsolidatedFinancialEntry>>(json);
             Assert.True(list.Count > 0);
-            Assert.Equal(20, list[0].Amount);
-            Assert.Equal(15, list[1].Amount);
+
+            var match = list
+                .FirstOrDefault(consolidated => 
+                {
+                    return consolidated.Amount == 15 && 
+                           consolidated.PaymentMethod == "Credit" &&
+                           consolidated.Type == "Leisure";
+                });
+            Assert.NotNull(match);
+
+            match = list
+                .FirstOrDefault(consolidated =>
+                {
+                    return consolidated.Amount == 20 &&
+                           consolidated.PaymentMethod == "Credit" &&
+                           consolidated.Type == "Bills";
+                });
+            Assert.NotNull(match);
 
             foreach (Store store in insertedStores)
             {

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using FinancialEntries.Services.Cache;
 using FinancialEntries.Services.Firestore;
-using FinancialEntries.Services.Observers;
 using Google.Cloud.Firestore;
 using FinancialEntryModel = FinancialEntries.Models.FinancialEntry;
 using StoreModel = FinancialEntries.Models.Store;
@@ -12,16 +11,19 @@ namespace FinancialEntries.Services.FinancialEntry
 {
     public class Repository : IRepository<FinancialEntryModel>
     {
-        private IDatabase _database;
+        private readonly IDatabase _database;
+
+        private readonly ISubjectCache _subject;
 
         private const string Collection = "FinancialEntries";
 
-        private Subject subject = new Subject();
+        
 
         public Repository(IDatabase database)
         {
             _database = database;
-            subject.AddObserver(new CacheObserver(CacheKey.ConsolidatedFinancialEntries));
+            _subject = StaticServiceProvider
+                        .Provider.GetService(typeof(ISubjectCache)) as ISubjectCache;
         }
 
         public bool Delete(string id)
@@ -39,7 +41,7 @@ namespace FinancialEntries.Services.FinancialEntry
                 return false;
             }
 
-            subject.NotifyObservers();
+            _subject.GetInstance().NotifyObservers();
 
             return true;
         }
@@ -58,7 +60,7 @@ namespace FinancialEntries.Services.FinancialEntry
             store.Wait();
             model.Store = store.Result.ConvertTo<StoreModel>();
 
-            subject.NotifyObservers();
+            _subject.GetInstance().NotifyObservers();
 
             return model;
         }
@@ -120,9 +122,9 @@ namespace FinancialEntries.Services.FinancialEntry
             var store = storeReference.GetSnapshotAsync();
             store.Wait();
             model.Store = store.Result.ConvertTo<StoreModel>();
-            
-            subject.NotifyObservers();
-            
+
+            _subject.GetInstance().NotifyObservers();
+
             return model;
         }
 

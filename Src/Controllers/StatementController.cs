@@ -34,8 +34,7 @@ namespace FinancialEntries.Controllers
                 CacheKey.ConsolidatedFinancialEntries,
                 context => 
                 {
-                    context.SetAbsoluteExpiration(TimeSpan.FromDays(1));
-                    context.SetPriority(CacheItemPriority.High);
+                    context.SetSlidingExpiration(TimeSpan.FromDays(1));
                     
                     return new ConsolidatedStatement().Consolidate(_repository);
                 });
