@@ -57,9 +57,9 @@ Scenario: 300 Financial Entries in application, 300 users making HTTP Requests w
 
 #### Results
 
-Min: ~19ms
-Max: ~3s
-Average: ~872ms
+Min: ~19ms  
+Max: ~3s  
+Average: ~872ms  
 
 To reproduce the test, you can use `performance.jmx` file in Apache JMeter.
 
