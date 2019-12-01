@@ -42,12 +42,26 @@ dotnet test
 
 While running the project, you can access the Swagger UI at `/docs` endpoint. This will show all API resources, properties and responses.
 
-- Insomnia Workspace is available at `Src/insomnia.json` as alternative.
+- Insomnia Workspace is available at `insomnia.json` as alternative.
 
 ## See in action running into Google Cloud Platform
 
 An instance of Google App Engine is running for this project at: http://financial-entries-259514.appspot.com/
 - Documentation: http://financial-entries-259514.appspot.com/docs
+
+### Performance test
+
+Using Apache JMeter, I've tested `/statements` API with application deployed in GCP.
+
+Scenario: 300 Financial Entries in application, 300 users making HTTP Requests with a Ramp-up period of 1 second.
+
+#### Results
+
+Min: ~19ms
+Max: ~3s
+Average: ~872ms
+
+To reproduce the test, you can use `performance.jmx` file in Apache JMeter.
 
 ### Notes
 

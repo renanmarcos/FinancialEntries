@@ -30,11 +30,11 @@ namespace FinancialEntries.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<ConsolidatedFinancialEntry>> Index()
         {
-            var cached = _cache.GetOrCreate<IEnumerable<ConsolidatedFinancialEntry>>(
+            var cached = _cache.GetOrCreate(
                 CacheKey.ConsolidatedFinancialEntries,
                 context => 
                 {
-                    context.SetAbsoluteExpiration(TimeSpan.FromDays(7));
+                    context.SetAbsoluteExpiration(TimeSpan.FromDays(1));
                     context.SetPriority(CacheItemPriority.High);
                     
                     return new ConsolidatedStatement().Consolidate(_repository);
