@@ -61,7 +61,7 @@ Min: ~19ms
 Max: ~3s  
 Average: ~872ms  
 
-To reproduce the test, you can use `performance.jmx` file in Apache JMeter.
+To reproduce the test, you can use `performance.jmx` file in Apache JMeter. (Scenario must be recreated)
 
 ### Notes
 
